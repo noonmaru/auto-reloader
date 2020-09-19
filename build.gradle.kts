@@ -42,16 +42,14 @@ tasks {
     create<Copy>("copyJarToDocker") {
         from(jar)
 
-        val jarTask = jar.get()
-        val fileName = jarTask.archiveFileName.get()
         var dest = File(".docker/plugins")
         // Copy bukkit plugin update folder
-        if (File(dest, fileName).exists()) dest = File(dest, "update")
+        if (File(dest, jar.get().archiveFileName.get()).exists()) dest = File(dest, "update")
 
         into(dest)
 
         doLast {
-            println("Copy from $fileName to ${dest.path}")
+            println("Copy to ${dest.path}")
         }
     }
 }

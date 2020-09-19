@@ -8,8 +8,6 @@ log "Downloading..."
 
 PLUGINS_DIR="/data/plugins"
 PLUGINS=(
-  "https://edge.forgecdn.net/files/3059/623/worldedit-bukkit-7.2.0-beta-05.jar"
-  "https://github.com/dmulloy2/ProtocolLib/releases/download/4.5.1/ProtocolLib.jar"
   "https://github.com/noonmaru/kotlin-plugin/releases/download/1.4.10/kotlin-1.4.10.jar"
 )
 
