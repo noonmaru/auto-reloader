@@ -44,7 +44,7 @@ tasks {
 
         val jarTask = jar.get()
         val fileName = jarTask.archiveFileName.get()
-        var dest = File(".docker/plugins/")
+        var dest = File(".docker/plugins")
         // Copy bukkit plugin update folder
         if (File(dest, fileName).exists()) dest = File(dest, "update")
 
