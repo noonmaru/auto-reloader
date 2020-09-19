@@ -1,23 +1,20 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.10"
 }
-
-group = requireNotNull(properties["pluginName"]) { "Group is undefined in properties" }
-version = requireNotNull(properties["pluginVersion"]) { "Version is undefined in properties" }
 
 repositories {
     mavenCentral()
-    maven(url = "https://papermc.io/repo/repository/maven-public/") //paper
-    maven(url = "https://repo.dmulloy2.net/nexus/repository/public/") //protocollib
-    maven(url = "https://jitpack.io/") //tap, psychic
+    maven(url = "https://papermc.io/repo/repository/maven-public/")
+    maven(url = "https://repo.dmulloy2.net/nexus/repository/public/")
+    maven(url = "https://jitpack.io/")
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8")) //kotlin
-    implementation("junit:junit:4.12") //junit
-    implementation("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT") //paper
-    implementation("com.comphenix.protocol:ProtocolLib:4.5.1") //protocollib
-    implementation("com.github.noonmaru:tap:2.4.1") //tap
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
+    implementation("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT")
+
+    testImplementation("junit:junit:4.12")
 }
 
 tasks {
@@ -38,8 +35,23 @@ tasks {
             expand(project.properties)
         }
     }
-//    create<Copy>("distJar") {
-//        from(jar)
-//        into("W:\\Servers\\sample\\plugins")
-//    }
+    jar {
+        archiveBaseName.set(project.property("pluginName").toString())
+        archiveVersion.set("") // For bukkit plugin update
+    }
+    create<Copy>("copyJarToDocker") {
+        from(jar)
+
+        val jarTask = jar.get()
+        val fileName = jarTask.archiveFileName.get()
+        var dest = File(".docker/plugins/")
+        // Copy bukkit plugin update folder
+        if (File(dest, fileName).exists()) dest = File(dest, "update")
+
+        into(dest)
+
+        doLast {
+            println("Copy from $fileName to ${dest.path}")
+        }
+    }
 }

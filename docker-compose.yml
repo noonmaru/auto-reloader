@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  tap:
+    build: .
+    container_name: debug_auto_reloader
+    stdin_open: true
+    tty: true
+    ports:
+      - 25565:25565
+      - 5005:5005
+    volumes:
+      - ./.docker:/data
