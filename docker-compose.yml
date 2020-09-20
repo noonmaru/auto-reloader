@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  tap:
+  paper:
     build: .
     container_name: debug_auto_reloader
     stdin_open: true
@@ -11,3 +11,6 @@ services:
       - 5005:5005
     volumes:
       - ./.docker:/data
+    entrypoint:
+      - /docker-setup-plugin
+      - https://github.com/noonmaru/kotlin-plugin/releases/download/1.4.10/kotlin-1.4.10.jar

@@ -7,11 +7,8 @@ function log {
 log "Downloading..."
 
 PLUGINS_DIR="/data/plugins"
-PLUGINS=(
-  "https://github.com/noonmaru/kotlin-plugin/releases/download/1.4.10/kotlin-1.4.10.jar"
-)
 
-for PLUGIN_URL in ${PLUGINS[@]}; do
+for PLUGIN_URL in "$@"; do
   log "Download plugin from $PLUGIN_URL"
   wget -Nq "$PLUGIN_URL" -P $PLUGINS_DIR
 done
