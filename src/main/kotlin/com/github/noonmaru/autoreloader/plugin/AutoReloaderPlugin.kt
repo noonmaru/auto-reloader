@@ -3,12 +3,16 @@ package com.github.noonmaru.autoreloader.plugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitTask
 import java.io.File
 
 /**
  * @author Noonmaru
  */
 class AutoReloaderPlugin : JavaPlugin() {
+
+    private lateinit var reloadTask: BukkitTask
+
     override fun onEnable() {
         // after plugins setup
         server.scheduler.runTask(
@@ -27,11 +31,12 @@ class AutoReloaderPlugin : JavaPlugin() {
                 val watcher = UpdateWatcher(list)
 
                 // sync
-                server.scheduler.runTaskTimerAsynchronously(this, Runnable {
+                reloadTask = server.scheduler.runTaskTimerAsynchronously(this, Runnable {
                     watcher.nextScan()?.let { pair ->
                         Bukkit.broadcastMessage("Plugin update found: ${pair.first.name}")
                         Bukkit.broadcastMessage("Attempt to reload...")
                         reload()
+                        reloadTask.cancel()
                     }
                 }, 0L, 1L)
             })
