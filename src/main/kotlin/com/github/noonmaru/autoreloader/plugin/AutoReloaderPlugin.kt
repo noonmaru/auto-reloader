@@ -18,21 +18,18 @@ class AutoReloaderPlugin : JavaPlugin() {
         server.scheduler.runTask(
             this, Runnable {
                 val list = server.pluginManager.plugins.map { it to File(file.parentFile, "update/${it.file.name}") }
-
                 if (list.isEmpty()) {
                     logger.info("No files to monitor.")
                     return@Runnable
                 }
-
                 list.forEach {
                     logger.info("Monitor plugin update ${it.first.name}")
                 }
 
                 val watcher = UpdateWatcher(list)
-
                 // sync
                 reloadTask = server.scheduler.runTaskTimerAsynchronously(this, Runnable {
-                    watcher.nextScan()?.let { pair ->
+                    watcher.scanNext()?.let { pair ->
                         Bukkit.broadcastMessage("Plugin update found: ${pair.first.name}")
                         Bukkit.broadcastMessage("Attempt to reload...")
                         reload()
@@ -63,12 +60,7 @@ internal class UpdateWatcher(list: List<Pair<Plugin, File>>) {
     private val array: Array<Pair<Plugin, File>> = list.toTypedArray()
     private var index = 0
 
-    fun nextScan(): Pair<Plugin, File>? {
-        val pair = array.let { it[index++ % it.count()] }
-
-        if (pair.second.exists()) {
-            return pair
-        }
-        return null
+    fun scanNext(): Pair<Plugin, File>? {
+        return array.let { it[index++ % it.count()] }.takeIf { it.second.exists() }
     }
 }

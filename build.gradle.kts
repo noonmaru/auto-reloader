@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.4.21"
 }
 
 repositories {
@@ -10,25 +10,14 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
     implementation("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT")
-
-    testImplementation("junit:junit:4.12")
 }
 
 tasks {
-    compileJava {
-        options.encoding = "UTF-8"
-    }
-    javadoc {
-        options.encoding = "UTF-8"
-    }
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
     }
     processResources {
         filesMatching("**/*.yml") {
@@ -38,18 +27,5 @@ tasks {
     jar {
         archiveBaseName.set(project.property("pluginName").toString())
         archiveVersion.set("") // For bukkit plugin update
-    }
-    create<Copy>("copyJarToDocker") {
-        from(jar)
-
-        var dest = File(".docker/plugins")
-        // Copy bukkit plugin update folder
-        if (File(dest, jar.get().archiveFileName.get()).exists()) dest = File(dest, "update")
-
-        into(dest)
-
-        doLast {
-            println("Copy to ${dest.path}")
-        }
     }
 }
