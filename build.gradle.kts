@@ -28,4 +28,11 @@ tasks {
         archiveBaseName.set(project.property("pluginName").toString())
         archiveVersion.set("") // For bukkit plugin update
     }
+    create<Copy>("paper") {
+        from(jar)
+        var dest = file(".paper/plugins")
+        // if plugin.jar exists in plugins change dest to plugins/update
+        if (File(dest, jar.get().archiveFileName.get()).exists()) dest = File(dest, "update")
+        into(dest)
+    }
 }
